@@ -1,5 +1,10 @@
+const http = require('http');
 const { Client, GatewayIntentBits, AttachmentBuilder } = require('discord.js');
 const { createCanvas, loadImage } = require('@napi-rs/canvas');
+
+http.createServer((req, res) => {
+    res.end('Bot is running');
+}).listen(process.env.PORT || 3000);
 
 const client = new Client({
     intents: [
@@ -20,13 +25,12 @@ client.on('guildMemberAdd', async member => {
         const channel = await client.channels.fetch(CHANNEL_ID);
 
         const bg = await loadImage('./NOVA.png');
+
         const canvas = createCanvas(500, 500);
         const ctx = canvas.getContext('2d');
 
-        // صورة NOVA
         ctx.drawImage(bg, 0, 0, 500, 500);
 
-        // صورة العضو
         const avatar = await loadImage(
             member.user.displayAvatarURL({
                 extension: 'png',
@@ -34,7 +38,6 @@ client.on('guildMemberAdd', async member => {
             })
         );
 
-        // دائرة صورة العضو
         ctx.save();
         ctx.beginPath();
         ctx.arc(250, 125, 60, 0, Math.PI * 2);
@@ -42,7 +45,6 @@ client.on('guildMemberAdd', async member => {
         ctx.drawImage(avatar, 190, 65, 120, 120);
         ctx.restore();
 
-        // مستطيل الاسم
         ctx.fillStyle = '#4b9ccc';
         ctx.fillRect(165, 190, 170, 45);
 
@@ -56,7 +58,6 @@ client.on('guildMemberAdd', async member => {
             { name: 'welcome.png' }
         );
 
-        // الصورة + الكلام خارج الصورة
         await channel.send({
             content:
                 `Welcome To NOVA RP\n` +
